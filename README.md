@@ -41,6 +41,9 @@ Requires the .NET 10 SDK.
 - The in-memory event bus has no outbox: a service can save its change and lose the event.
 - The fake services keep the change and the idempotency key together in memory. A real one has to
   save both in the same database transaction.
+- A call that timed out can still reach a real service after its compensation ran (a charge landing
+  after the refund). The fake services answer at once, so this cannot happen here; a real service
+  has to remember the compensation and reject the late call.
 - Nothing hides a half-finished saga from other readers (no isolation): another request can see a
   charged order whose stock is not reserved yet.
 - Amounts are not checked for currency precision.
