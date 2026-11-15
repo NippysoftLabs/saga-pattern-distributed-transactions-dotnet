@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/OrderSaga/OrderSaga.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/OrderSaga.Tests/OrderSaga.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tools/">
+    <Project Path="tools/SagaDemo/SagaDemo.csproj" />
+    <Project Path="tools/HostileInputs/HostileInputs.csproj" />
+  </Folder>
+</Solution>
