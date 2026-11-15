@@ -23,6 +23,10 @@ public sealed class RetryPolicy
     public TimeSpan BaseDelay { get; }
 
     /// <summary>Every wait this policy asked for, in order (handy in tests and demos).</summary>
+    /// <remarks>
+    /// Instrumentation only: a plain list, not safe for concurrent writes, and it keeps every wait
+    /// of every saga that shares this policy. Do not use it in production code.
+    /// </remarks>
     public List<TimeSpan> Waits { get; } = new();
 
     public async Task ExecuteAsync(Action call)

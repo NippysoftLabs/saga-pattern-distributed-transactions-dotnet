@@ -37,7 +37,17 @@ Requires the .NET 10 SDK.
 
 ## What this code does not do
 
-- Two processes resuming the same saga at once are not prevented. Use a lease or a row lock.
+- Two processes working on the same saga at once are not prevented. That covers two `ResumeAsync`
+  calls, and also two `RunAsync` calls with the same saga id: checking that the saga is not in the
+  log and writing its `Started` entry are two separate operations, so both calls can start it. Use
+  a lease, a row lock or a unique key on the saga id.
+- Only `TransientException` and `BusinessRuleException` are handled. Any other exception from a
+  service escapes `RunAsync` or `ResumeAsync`: the saga is not marked Stuck and no alert goes out.
+  It stays in the log without a final entry, so `SagaMonitor` lists it only after `maxRunning`.
+- The retry policy has no cancellation (`CancellationToken`), no timeout per call, no jitter and no
+  limit on the total time spent retrying.
+- `RetryPolicy.Waits` is a plain `List<TimeSpan>` for the demo and the tests. It is not safe for
+  concurrent writes and it keeps growing with every retry of every saga that shares the policy.
 - The in-memory event bus has no outbox: a service can save its change and lose the event.
 - The fake services keep the change and the idempotency key together in memory. A real one has to
   save both in the same database transaction.
