@@ -40,7 +40,7 @@ Requires the .NET 10 SDK.
 - Two processes working on the same saga at once are not prevented. That covers two `ResumeAsync`
   calls, and also two `RunAsync` calls with the same saga id: checking that the saga is not in the
   log and writing its `Started` entry are two separate operations, so both calls can start it. Use
-  a lease, a row lock or a unique key on the saga id.
+  a lease, a row lock or a unique constraint on the saga id.
 - Only `TransientException` and `BusinessRuleException` are handled. Any other exception from a
   service escapes `RunAsync` or `ResumeAsync`: the saga is not marked Stuck and no alert goes out.
   It stays in the log without a final entry, so `SagaMonitor` lists it only after `maxRunning`.
